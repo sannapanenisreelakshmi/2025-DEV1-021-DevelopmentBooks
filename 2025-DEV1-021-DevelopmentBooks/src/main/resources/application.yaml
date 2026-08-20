@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: 2025-DEV1-021-DevelopmentBooks
+	server:
+		  port: 8092
