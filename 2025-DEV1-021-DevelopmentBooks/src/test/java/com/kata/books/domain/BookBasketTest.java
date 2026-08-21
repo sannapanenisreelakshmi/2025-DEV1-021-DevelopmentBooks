@@ -20,4 +20,12 @@ public class BookBasketTest {
 	             .isInstanceOf(IllegalArgumentException.class)
 	             .hasMessage("Book quantities must be positive");
 	    }
+	 @Test
+	    void defensivelyCopiesQuantities() {
+	        var basket = new BookBasket(Map.of(BookTitle.CLEAN_CODE, 2));
+
+	        assertThat(basket.quantities()).containsExactly(Map.entry(BookTitle.CLEAN_CODE, 2));
+	        assertThatThrownBy(() -> basket.quantities().put(BookTitle.CLEAN_CODER, 1))
+	                .isInstanceOf(UnsupportedOperationException.class);
+	    }
 }
