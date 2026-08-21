@@ -343,4 +343,36 @@ Validate → Check EUR → Round to 2 decimals → Create Money
 
 Using BigDecimal and centralized validation makes Money a reliable value object for monetary operations.
 
+Distinct Book Set Discounts
 
+This test verifies that the correct discount is applied when a basket contains different book titles.
+
+Discount Rules
+Distinct-Books	Discount	Expected Price
+1	0%	€50.00
+2	5%	€95.00
+3	10%	€135.00
+4	20%	€160.00
+5	25%	€187.50
+
+Test
+@Test
+void appliesEveryDistinctSetDiscount() {
+
+    assertThat(price(1, 0, 0, 0, 0))
+        .isEqualTo(Money.eur("50.00"));
+
+    assertThat(price(1, 1, 0, 0, 0))
+        .isEqualTo(Money.eur("95.00"));
+
+    assertThat(price(1, 1, 1, 0, 0))
+        .isEqualTo(Money.eur("135.00"));
+
+    assertThat(price(1, 1, 1, 1, 0))
+        .isEqualTo(Money.eur("160.00"));
+
+    assertThat(price(1, 1, 1, 1, 1))
+        .isEqualTo(Money.eur("187.50"));
+}
+
+The test ensures that the pricing logic correctly handles 1 to 5 distinct books and applies the corresponding discount.
