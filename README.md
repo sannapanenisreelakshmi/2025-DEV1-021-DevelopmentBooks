@@ -68,6 +68,7 @@ mvn spring-boot:run
 The application will start on:
 http://localhost:8092
 
+Update2:
 
 BookBasket
 
@@ -303,5 +304,43 @@ Uses a Java record to reduce boilerplate.
 Provides BookBasket.empty() for convenient empty-basket creation.
 
 This design helps ensure that a BookBasket is created in a valid state and that its internal collection is protected from unexpected external modification.
+
+Update 3 :
+
+Money
+
+Money is a Java record used to represent monetary amounts with a currency.
+
+Features
+Uses BigDecimal for accurate monetary calculations.
+Currently supports EUR only.
+Rejects null amount and currency.
+Rejects unsupported currencies.
+Rounds amounts to 2 decimal places using RoundingMode.HALF_UP.
+Provides convenient eur() factory methods.
+Example
+Money price = Money.eur("10.125");
+
+The amount is automatically rounded:
+
+10.125 → 10.13 EUR
+
+You can also create it using BigDecimal:
+
+Money price = Money.eur(new BigDecimal("19.99"));
+Validation
+Input	Result
+Money.eur("10")	10.00 EUR
+Money.eur("10.125")	10.13 EUR
+null amount	NullPointerException
+null currency	NullPointerException
+Non-EUR currency	IllegalArgumentException
+Design
+
+The object follows this flow:
+
+Validate → Check EUR → Round to 2 decimals → Create Money
+
+Using BigDecimal and centralized validation makes Money a reliable value object for monetary operations.
 
 
