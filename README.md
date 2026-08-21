@@ -37,6 +37,8 @@ src
 └── test
 
    └── java
+   
+   
 
 🚀 Getting Started
 Prerequisites
@@ -65,4 +67,241 @@ Run the Application
 mvn spring-boot:run
 The application will start on:
 http://localhost:8092
+
+
+BookBasket
+
+BookBasket is a Java record that represents a collection of books and the quantity requested for each book.
+
+The implementation is designed with a focus on immutability, input validation, defensive copying, and clean object creation.
+
+Overview
+
+A BookBasket maintains book quantities using:
+
+Map<BookTitle, Integer>
+
+where:
+
+BookTitle represents the book.
+Integer represents the requested quantity.
+
+For example:
+
+CLEAN_CODE      → 2
+EFFECTIVE_JAVA  → 1
+
+Key Features
+1. Java Record
+
+BookBasket is implemented as a Java record. Records are well suited for data-carrying objects and automatically provide:
+
+Accessor method: quantities(), equals(), hashCode(), toString()
+
+This keeps the class concise while clearly expressing its purpose.
+
+2. Input Validation
+The constructor validates all incoming data before creating the basket.
+Quantities map cannot be null
+Passing a null map results in a NullPointerException.
+Book title cannot be null.Each book title is validated.This ensures that every entry has a valid BookTitle and quantity must be positive
+
+The basket only accepts positive quantities.Therefore, the following values are invalid:
+
+null
+0
+-1
+-2
+...
+
+Valid quantities are:
+
+1
+2
+3
+...
+
+Invalid input is rejected immediately, following a fail-fast approach.
+
+3. Defensive Copying
+
+The constructor creates a new EnumMap:
+
+var copiedQuantities =
+        new EnumMap<BookTitle, Integer>(BookTitle.class);
+
+The validated entries from the input map are copied into this new map.
+
+This prevents the BookBasket from directly depending on the caller's mutable map.
+
+Example
+var quantities =
+        new EnumMap<BookTitle, Integer>(BookTitle.class);
+
+quantities.put(BookTitle.CLEAN_CODE, 2);
+
+var basket = new BookBasket(quantities);
+
+If the caller later modifies the original map:
+
+quantities.put(BookTitle.CLEAN_CODE, 10);
+
+the basket does not use the original map as its internal storage.
+
+This is an important defensive programming technique.
+
+4. Why EnumMap?
+
+EnumMap is used because BookTitle is an enum. EnumMap is specifically designed for enum keys and is an appropriate choice when the map key is an enum.
+
+5. Immutable Internal State
+
+After validation and copying, the map is converted using:
+
+quantities = Map.copyOf(copiedQuantities);
+
+Map.copyOf() returns an unmodifiable map.
+
+This prevents the internal collection from being modified after the BookBasket has been created.
+
+The overall process is:
+
+Input Map
+    ↓
+Validate
+    ↓
+Copy into EnumMap
+    ↓
+Map.copyOf()
+    ↓
+Unmodifiable Map
+    ↓
+BookBasket
+
+This provides a strong separation between the caller's mutable input and the basket's internal state.
+
+6. Empty Basket Factory Method
+
+The class provides a convenient factory method:
+
+public static BookBasket empty() {
+    return new BookBasket(Map.of());
+}
+
+Instead of writing:
+
+new BookBasket(Map.of());
+
+you can simply write:
+
+BookBasket.empty();
+
+This makes the intention of the code clearer.
+
+Example
+var basket = BookBasket.empty();
+
+This creates a valid basket containing no books.
+
+7. Example Usage
+var quantities =
+        new EnumMap<BookTitle, Integer>(BookTitle.class);
+
+quantities.put(BookTitle.CLEAN_CODE, 2);
+quantities.put(BookTitle.EFFECTIVE_JAVA, 1);
+
+var basket = new BookBasket(quantities);
+
+The quantities can be accessed using the record accessor:
+basket.quantities();
+
+8. Validation Rules
+Input	Behaviour
+null quantities map	NullPointerException
+null book title	NullPointerException
+null quantity	IllegalArgumentException
+Quantity 0	IllegalArgumentException
+Negative quantity	IllegalArgumentException
+Positive quantity	Accepted
+Empty map	Accepted
+
+9. Design Principles: This implementation demonstrates several important Java and software design principles.
+
+Fail Fast: Invalid data is rejected during object creation rather than allowing an invalid BookBasket to exist.
+
+Defensive Copying: The input map is copied instead of being stored directly.
+
+Immutability
+
+Map.copyOf() ensures that the stored map cannot be modified through the map API.
+
+Encapsulation: The internal representation is protected from external modification.
+
+Single Responsibility : The BookBasket is responsible for representing and validating the state of a basket.
+
+Factory Method
+
+BookBasket.empty() provides a readable way to create an empty basket.
+
+10. Why Use var?
+
+The implementation uses:
+
+var copiedQuantities =
+        new EnumMap<BookTitle, Integer>(BookTitle.class);
+
+var allows Java to infer the local variable's type at compile time.
+
+The compiler understands this as:
+
+EnumMap<BookTitle, Integer> copiedQuantities =
+        new EnumMap<>(BookTitle.class);
+
+var does not mean that Java becomes dynamically typed. The variable still has a fixed compile-time type.
+
+11. Design Flow
+
+The complete object creation flow can be summarized as:
+
+             Caller
+                |
+                v
+       Map<BookTitle, Integer>
+                |
+                v
+        Validate input
+          /          \
+       Invalid       Valid
+         |             |
+         v             v
+     Exception     Defensive Copy
+                       |
+                       v
+                   EnumMap
+                       |
+                       v
+                  Map.copyOf()
+                       |
+                       v
+                BookBasket
+12. Summary
+
+BookBasket is a small but well-structured Java component that demonstrates how to create a reliable value object using modern Java features.
+
+The implementation follows the principle:
+
+Validate → Copy → Protect
+
+Specifically, it:
+
+Validates that the input map is not null.
+Validates every BookTitle.
+Ensures every quantity is positive.
+Creates a defensive copy using EnumMap.
+Converts the copy into an unmodifiable map using Map.copyOf().
+Uses a Java record to reduce boilerplate.
+Provides BookBasket.empty() for convenient empty-basket creation.
+
+This design helps ensure that a BookBasket is created in a valid state and that its internal collection is protected from unexpected external modification.
+
 
