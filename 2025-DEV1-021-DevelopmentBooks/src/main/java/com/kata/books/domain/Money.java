@@ -15,6 +15,7 @@ public record Money(BigDecimal amount, Currency currency) {
         if (!EUR.equals(currency)) {
             throw new IllegalArgumentException("Only EUR is supported");
         }
+        amount = amount.setScale(2, RoundingMode.HALF_UP);
     }
 
     public static Money eur(String amount) {

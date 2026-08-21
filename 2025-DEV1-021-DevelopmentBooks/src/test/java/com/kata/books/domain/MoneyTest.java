@@ -15,6 +15,10 @@ public class MoneyTest {
 	        assertThatThrownBy(() -> new Money(BigDecimal.ONE, Currency.getInstance("USD")))
 	                .isInstanceOf(IllegalArgumentException.class)
 	                .hasMessage("Only EUR is supported");
+	    } 
+	   @Test
+	    void roundsEuroAmountsToTwoDecimalsUsingHalfUp() {
+	        assertThat(Money.eur("1.005").amount()).isEqualByComparingTo("1.01");
 	    }
 
 }
