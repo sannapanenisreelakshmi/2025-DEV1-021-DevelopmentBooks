@@ -1,0 +1,41 @@
+package com.kata.books.application;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.EnumMap;
+import java.util.Map;
+
+import org.junit.jupiter.api.Test;
+
+import com.kata.books.domain.BookBasket;
+import com.kata.books.domain.BookTitle;
+import com.kata.books.domain.Money;
+
+public class OptimalBasketPricerTest {
+	private final BasketPricer pricer = new OptimalBasketPricer();
+
+    @Test
+    void appliesEveryDistinctSetDiscount() {
+        assertThat(price(1, 0, 0, 0, 0)).isEqualTo(Money.eur("50.00"));
+        assertThat(price(1, 1, 0, 0, 0)).isEqualTo(Money.eur("95.00"));
+        assertThat(price(1, 1, 1, 0, 0)).isEqualTo(Money.eur("135.00"));
+        assertThat(price(1, 1, 1, 1, 0)).isEqualTo(Money.eur("160.00"));
+        assertThat(price(1, 1, 1, 1, 1)).isEqualTo(Money.eur("187.50"));
+    }
+
+    private Money price(int cleanCode, int cleanCoder, int architecture, int tdd, int legacyCode) {
+        var quantities = new EnumMap<BookTitle, Integer>(BookTitle.class);
+        add(quantities, BookTitle.CLEAN_CODE, cleanCode);
+        add(quantities, BookTitle.CLEAN_CODER, cleanCoder);
+        add(quantities, BookTitle.CLEAN_ARCHITECTURE, architecture);
+        add(quantities, BookTitle.TDD_BY_EXAMPLE, tdd);
+        add(quantities, BookTitle.WORKING_EFFECTIVELY_WITH_LEGACY_CODE, legacyCode);
+        return pricer.price(new BookBasket(quantities));
+    }
+    private void add(Map<BookTitle, Integer> quantities, BookTitle title, int quantity) {
+        if (quantity > 0) {
+            quantities.put(title, quantity);
+        }
+    }
+
+}
