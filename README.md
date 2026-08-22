@@ -419,3 +419,37 @@ The test ensures that the cheapest combination (€320.00) is selected.
 Purpose
 
 The pricing algorithm should choose the optimal combination of discounted sets rather than simply creating the largest possible set.
+
+update: 6
+
+Order-Independent Pricing
+
+This test verifies that the Pricer produces the same price regardless of the order of book entries in the BookBasket.
+
+Test Scenario
+@Test
+void producesTheSamePriceRegardlessOfEntryOrder() {
+    var first = new BookBasket(Map.of(
+        BookTitle.CLEAN_CODE, 2,
+        BookTitle.CLEAN_CODER, 1,
+        BookTitle.CLEAN_ARCHITECTURE, 2
+    ));
+
+
+    var second = new BookBasket(Map.of(
+        BookTitle.CLEAN_ARCHITECTURE, 2,
+        BookTitle.CLEAN_CODE, 2,
+        BookTitle.CLEAN_CODER, 1
+    ));
+
+
+    assertThat(pricer.price(first))
+        .isEqualTo(pricer.price(second));
+}
+Purpose
+
+The test ensures:
+
+Same books and quantities → same price
+Different entry order → no change in price
+Pricing logic is order-independent and deterministic.

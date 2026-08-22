@@ -31,6 +31,15 @@ public class OptimalBasketPricerTest {
     void choosesTwoFourTitleSetsInsteadOfAFiveAndAThreeTitleSet() {
         assertThat(price(2, 2, 2, 1, 1)).isEqualTo(Money.eur("320.00"));
     }
+    @Test
+    void producesTheSamePriceRegardlessOfEntryOrder() {
+        var first = new BookBasket(Map.of(BookTitle.CLEAN_CODE, 2, BookTitle.CLEAN_CODER, 1,
+                BookTitle.CLEAN_ARCHITECTURE, 2));
+        var second = new BookBasket(Map.of(BookTitle.CLEAN_ARCHITECTURE, 2, BookTitle.CLEAN_CODE, 2,
+                BookTitle.CLEAN_CODER, 1));
+
+        assertThat(pricer.price(first)).isEqualTo(pricer.price(second));
+    }
 
     private Money price(int cleanCode, int cleanCoder, int architecture, int tdd, int legacyCode) {
         var quantities = new EnumMap<BookTitle, Integer>(BookTitle.class);
