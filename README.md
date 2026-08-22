@@ -376,3 +376,18 @@ void appliesEveryDistinctSetDiscount() {
 }
 
 The test ensures that the pricing logic correctly handles 1 to 5 distinct books and applies the corresponding discount.
+
+update4 :
+
+Repeated Discounted Sets
+
+This test verifies that discounts are correctly applied when the basket contains multiple sets of distinct books.
+
+Test Scenarios
+Book Quantities	Sets	Expected Price
+2, 2, 0, 0, 0	2 sets of 2 books	€190.00
+3, 3, 3, 3, 3	3 sets of 5 books	€562.50
+
+The test ensures that the pricing logic: Identifies separate sets of distinct books. Applies the appropriate discount to each set. Adds the discounted prices to calculate the final amount.
+
+Key concept: Discounts are calculated per distinct set, not simply based on the total number of books.

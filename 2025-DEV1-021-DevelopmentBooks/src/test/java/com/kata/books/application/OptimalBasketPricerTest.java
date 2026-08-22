@@ -22,7 +22,11 @@ public class OptimalBasketPricerTest {
         assertThat(price(1, 1, 1, 1, 0)).isEqualTo(Money.eur("160.00"));
         assertThat(price(1, 1, 1, 1, 1)).isEqualTo(Money.eur("187.50"));
     }
-
+    @Test
+    void pricesRepeatedDiscountedSets() {
+        assertThat(price(2, 2, 0, 0, 0)).isEqualTo(Money.eur("190.00"));
+        assertThat(price(3, 3, 3, 3, 3)).isEqualTo(Money.eur("562.50"));
+    }
     private Money price(int cleanCode, int cleanCoder, int architecture, int tdd, int legacyCode) {
         var quantities = new EnumMap<BookTitle, Integer>(BookTitle.class);
         add(quantities, BookTitle.CLEAN_CODE, cleanCode);
