@@ -465,3 +465,25 @@ Example
 The result is returned as a Money value in EUR.
 
 Note: This pricer does not apply any discounts.
+
+update 8 :
+
+Single Book Pricing
+
+This test verifies that one book costs €50.00.
+
+Test Scenario
+@Test
+void pricesOneBookAtFiftyEuros() {
+    var basket = new BookBasket(
+        Map.of(BookTitle.CLEAN_CODE, 1)
+    );
+
+
+    assertThat(pricer.price(basket))
+        .isEqualTo(Money.eur("50.00"));
+}
+Expected Result
+1 book × €50.00 = €50.00
+
+Purpose: Ensures the basic pricing logic correctly calculates the price of a single book.
