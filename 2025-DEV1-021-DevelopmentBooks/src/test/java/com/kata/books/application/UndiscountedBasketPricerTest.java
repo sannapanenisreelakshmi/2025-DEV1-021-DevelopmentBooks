@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import com.kata.books.domain.BookBasket;
 import com.kata.books.domain.BookTitle;
 import com.kata.books.domain.Money;
+import java.math.BigDecimal;
 
 public class UndiscountedBasketPricerTest {
 	private final BasketPricer pricer = new UndiscountedBasketPricer();
@@ -22,5 +23,11 @@ public class UndiscountedBasketPricerTest {
         var basket = new BookBasket(Map.of(BookTitle.CLEAN_CODE, 1));
 
         assertThat(pricer.price(basket)).isEqualTo(Money.eur("50.00"));
+    }
+    @Test
+    void appliesNoDiscountToMultipleCopiesOfOneTitle() {
+        var basket = new BookBasket(Map.of(BookTitle.CLEAN_CODE, 3));
+
+        assertThat(pricer.price(basket)).isEqualTo(Money.eur(new BigDecimal("150.00")));
     }
 }

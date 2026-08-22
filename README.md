@@ -487,3 +487,25 @@ Expected Result
 1 book × €50.00 = €50.00
 
 Purpose: Ensures the basic pricing logic correctly calculates the price of a single book.
+
+Update 9 :
+
+Multiple Copies of One Title
+
+This test verifies that multiple copies of the same book title receive no discount.
+
+Test Scenario
+@Test
+void appliesNoDiscountToMultipleCopiesOfOneTitle() {
+    var basket = new BookBasket(
+        Map.of(BookTitle.CLEAN_CODE, 3)
+    );
+
+
+    assertThat(pricer.price(basket))
+        .isEqualTo(Money.eur(new BigDecimal("150.00")));
+}
+Expected Result
+3 books × €50.00 = €150.00
+
+Purpose: Ensures discounts are applied only when there are different book titles, not simply multiple copies of the same title.
