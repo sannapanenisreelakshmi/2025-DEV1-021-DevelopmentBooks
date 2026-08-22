@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Objects;
 
 public record BookBasket(Map<BookTitle, Integer> quantities) {
-	
-	public BookBasket {
+
+    public BookBasket {
         Objects.requireNonNull(quantities, "quantities must not be null");
         var copiedQuantities = new EnumMap<BookTitle, Integer>(BookTitle.class);
         quantities.forEach((title, quantity) -> {
@@ -18,8 +18,12 @@ public record BookBasket(Map<BookTitle, Integer> quantities) {
         });
         quantities = Map.copyOf(copiedQuantities);
     }
-	    public static BookBasket empty() {
-	        return new BookBasket(Map.of());
-	    }
-   
+
+    public static BookBasket empty() {
+        return new BookBasket(Map.of());
+    }
+
+    public int totalBooks() {
+        return quantities.values().stream().mapToInt(Integer::intValue).sum();
+    }
 }

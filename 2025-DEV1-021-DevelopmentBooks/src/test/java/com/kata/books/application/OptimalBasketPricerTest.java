@@ -40,7 +40,6 @@ public class OptimalBasketPricerTest {
 
         assertThat(pricer.price(first)).isEqualTo(pricer.price(second));
     }
-
     private Money price(int cleanCode, int cleanCoder, int architecture, int tdd, int legacyCode) {
         var quantities = new EnumMap<BookTitle, Integer>(BookTitle.class);
         add(quantities, BookTitle.CLEAN_CODE, cleanCode);

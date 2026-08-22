@@ -446,10 +446,22 @@ void producesTheSamePriceRegardlessOfEntryOrder() {
     assertThat(pricer.price(first))
         .isEqualTo(pricer.price(second));
 }
-Purpose
-
-The test ensures:
+Purpose : The test ensures:
 
 Same books and quantities → same price
 Different entry order → no change in price
 Pricing logic is order-independent and deterministic.
+
+update 7:
+Undiscounted Basket Pricer
+
+UndiscountedBasketPricer calculates the basket price using a fixed €50.00 unit price per book.
+
+How It Works
+Total books × €50.00 = Basket price
+Example
+4 books × €50.00 = €200.00
+
+The result is returned as a Money value in EUR.
+
+Note: This pricer does not apply any discounts.
