@@ -391,3 +391,31 @@ Book Quantities	Sets	Expected Price
 The test ensures that the pricing logic: Identifies separate sets of distinct books. Applies the appropriate discount to each set. Adds the discounted prices to calculate the final amount.
 
 Key concept: Discounts are calculated per distinct set, not simply based on the total number of books.
+
+update 5 :
+
+Optimal Discount Set Selection
+
+This test verifies that the pricing logic chooses the most cost-effective combination of discounted sets.
+
+Test Scenario
+@Test
+void choosesTwoFourTitleSetsInsteadOfAFiveAndAThreeTitleSet() {
+    assertThat(price(2, 2, 2, 1, 1))
+        .isEqualTo(Money.eur("320.00"));
+}
+
+For the quantities:
+
+2, 2, 2, 1, 1
+
+the algorithm can create either:
+
+5-title + 3-title sets → €322.50
+Two 4-title sets → €320.00 ✅
+
+The test ensures that the cheapest combination (€320.00) is selected.
+
+Purpose
+
+The pricing algorithm should choose the optimal combination of discounted sets rather than simply creating the largest possible set.

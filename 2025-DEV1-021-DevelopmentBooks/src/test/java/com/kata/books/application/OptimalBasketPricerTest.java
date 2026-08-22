@@ -27,6 +27,11 @@ public class OptimalBasketPricerTest {
         assertThat(price(2, 2, 0, 0, 0)).isEqualTo(Money.eur("190.00"));
         assertThat(price(3, 3, 3, 3, 3)).isEqualTo(Money.eur("562.50"));
     }
+    @Test
+    void choosesTwoFourTitleSetsInsteadOfAFiveAndAThreeTitleSet() {
+        assertThat(price(2, 2, 2, 1, 1)).isEqualTo(Money.eur("320.00"));
+    }
+
     private Money price(int cleanCode, int cleanCoder, int architecture, int tdd, int legacyCode) {
         var quantities = new EnumMap<BookTitle, Integer>(BookTitle.class);
         add(quantities, BookTitle.CLEAN_CODE, cleanCode);
