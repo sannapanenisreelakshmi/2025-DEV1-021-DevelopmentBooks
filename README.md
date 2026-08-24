@@ -533,3 +533,140 @@ class BasketPricingApiIntegrationTest {
 }
 
 These tests verify the API end-to-end from HTTP request to pricing response, including validation and error handling.
+
+Update : 11
+
+Basket Pricing API Integration Tests
+
+This test class verifies the basket pricing REST API using Spring Boot, MockMvc, and JUnit 5.
+
+Covered Scenarios
+✅ Prices single and multiple book titles → €95.00
+✅ Selects the optimal discount grouping → €320.00
+✅ Rejects unknown book titles
+✅ Rejects zero or negative quantities
+✅ Rejects missing quantities
+✅ Rejects empty requests
+✅ Rejects malformed JSON
+✅ Verifies HTTP status codes and JSON error responses
+Test Flow
+HTTP POST Request
+       ↓
+/api/v1/baskets/price
+       ↓
+Controller & Validation
+       ↓
+BasketPricer
+       ↓
+JSON Response
+
+Purpose: Ensures the basket pricing API works correctly for both valid pricing scenarios and invalid requests, including validation and error handling.
+
+
+Update : 12
+
+Basket Pricing Controller
+
+BasketPricingController exposes the REST API for calculating a book basket price.
+
+Endpoint
+POST /price
+How It Works
+HTTP Request
+    ↓
+BasketPriceRequest
+    ↓
+Convert items to book quantities
+    ↓
+BasketPricer
+    ↓
+BookBasket
+    ↓
+BasketPriceResponse
+Key Responsibilities
+Accepts basket pricing requests using @RequestBody.
+Validates the request using @Valid.
+Converts request items into Map<BookTitle, Integer>.
+Uses BasketPricer to calculate the price.
+Returns the currency and total amount in the response.
+Uses Math.addExact() when combining quantities to safely detect integer overflow.
+Example Response
+{
+  "currency": "EUR",
+  "total": 95.00
+}
+
+Purpose: Keeps the controller focused on HTTP request/response handling, while the actual pricing logic remains inside BasketPricer.
+
+Update 13:
+
+The service listens on `http://localhost:8092` .
+
+## API
+  http://localhost:8092/api/v1/baskets/price
+
+### Price a basket
+
+`POST /api/v1/baskets/price`
+
+```json
+{
+  "items": [
+    { "title": "CLEAN_CODE", "quantity": 1 },
+    { "title": "CLEAN_CODER", "quantity": 1 }
+  ]
+}
+```
+
+Successful response (`200 OK`):
+
+```json
+{
+  "currency": "EUR",
+  "total": 95.00
+}
+```
+
+Requests with malformed JSON, unknown titles, or invalid body structure return `400 Bad Request`:
+
+```json
+{
+  "code": "INVALID_REQUEST",
+  "message": "Request body is invalid"
+}
+```
+
+Missing, empty, zero, or negative quantities return a validation error:
+
+```json
+{
+  "code": "VALIDATION_ERROR",
+  "message": "quantity quantity must be positive"
+}
+```
+
+calculating cost for this book basket 
+
+2 copies of the “Clean Code” book
+2 copies of the “Clean Coder” book
+2 copies of the “Clean Architecture” book
+1 copy of the “Test Driven Development by Example” book
+1 copy of the “Working effectively with Legacy Code” book
+
+```json
+{
+  "items": [
+    { "title": "CLEAN_CODE", "quantity": 2 },
+    { "title": "CLEAN_CODER", "quantity": 2 },
+	{ "title": "CLEAN_ARCHITECTURE", "quantity": 2 },
+	{ "title": "TDD_BY_EXAMPLE", "quantity": 1 },
+	{ "title": "WORKING_EFFECTIVELY_WITH_LEGACY_CODE", "quantity": 1 }
+  ]
+}
+```
+Result :  
+{
+    "currency": "EUR",
+    "total": 320.00
+}
+
