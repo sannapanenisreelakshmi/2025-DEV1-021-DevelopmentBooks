@@ -509,3 +509,27 @@ Expected Result
 3 books × €50.00 = €150.00
 
 Purpose: Ensures discounts are applied only when there are different book titles, not simply multiple copies of the same title.
+
+update 10:
+
+Basket Pricing API Integration Tests
+
+Integration tests for the /api/v1/baskets/price REST API using Spring Boot, MockMvc, and JUnit 5.
+
+Covered Scenarios
+✅ Single and multi-title basket pricing
+✅ Optimal discount grouping
+✅ Unknown book title validation
+✅ Zero/negative quantity validation
+✅ Missing quantity validation
+✅ Empty and malformed requests
+✅ HTTP status and JSON response validation
+Test Setup
+@SpringBootTest
+@AutoConfigureMockMvc
+class BasketPricingApiIntegrationTest {
+    @Autowired
+    private MockMvc mockMvc;
+}
+
+These tests verify the API end-to-end from HTTP request to pricing response, including validation and error handling.

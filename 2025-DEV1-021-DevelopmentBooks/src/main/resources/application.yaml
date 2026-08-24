@@ -1,5 +1,6 @@
 spring:
   application:
-    name: 2025-DEV1-021-DevelopmentBooks
-	server:
-		  port: 8092
+    name: potter-kata-pricing-service
+
+server:
+  port: 8092
